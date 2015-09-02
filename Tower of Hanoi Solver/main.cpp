@@ -270,6 +270,8 @@ tower * moveRing(tower * theTowers, whichTower currentTower, whichTower destinat
 
 //This is the part I'm having trouble with...
 //This is the recursive function to solve the tower
+//I've tried implementing it multiple times, but can't seem to get
+//it right so i've just deleted it all for now.
 void solveHanoi()
 {
     //?????????
