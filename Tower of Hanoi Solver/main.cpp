@@ -14,14 +14,13 @@ const char towerMaterial = '|';
 const char ringMaterial = '#';
 const char blankSpace = '.';
 
-
-const int numRings = 3; //This can change
+const int numRings = 4; //This can change
 
 const int towerHeight = numRings + 2;
 const int padding = 2;
 const int biggestRing = numRings*2-1;
 
-int funcCalls = 0;
+int numMoves = 0;
 
 std::string * ringLook;
 std::string * towerLook;
@@ -43,6 +42,12 @@ struct tower
     int height = 0;
     ring * whichRing = NULL;
 };
+
+void wait()
+{
+    std::cin.sync();
+    std::cin.get();
+}
 
 //Tower will look like this with 3 rings:
 //.......................
@@ -114,7 +119,7 @@ void printTowers(tower * theTowers)
             std::cout << std::endl;
         }
     }
-    
+    std::cout << std::endl;
 }
 
 //Put all rings into the first tower. In a normal game it will initialize as 3, 2, 1
@@ -272,17 +277,21 @@ tower * moveRing(tower * theTowers, whichTower currentTower, whichTower destinat
 //This is the recursive function to solve the tower
 //I've tried implementing it multiple times, but can't seem to get
 //it right so i've just deleted it all for now.
-void solveHanoi()
+void solveHanoi(tower * theTowers, int numDiscs, whichTower initialTower, whichTower endTower, whichTower auxTower)
 {
-    //?????????
+    if(numDiscs > 0)
+    {
+        solveHanoi(theTowers, numDiscs-1, initialTower, auxTower, endTower);
+        moveRing(theTowers, initialTower, endTower);
+        printTowers(theTowers);
+        //wait();
+        ++numMoves;
+        solveHanoi(theTowers, numDiscs-1, auxTower, endTower, initialTower);
+    }
+
     return;
 }
 
-void wait()
-{
-    std::cin.sync();
-    std::cin.get();
-}
 int main()
 {
     //Make the three towers
@@ -293,35 +302,11 @@ int main()
     towerLook = makeTowerDisplay(towerLook);
     
     printTowers(theTowers);
-    wait();
-    
-    //THIS IS THE HARD CODED WAY OF HOW TO SOLVE THIS PROBLEM WITH 3 RINGS
-    //I'm supposed to make a recursive function to solve the problem with n number of rings
-    //But I can't seem to understand how to implement it...
-    
-    moveRing(theTowers, TOWER_ONE, TOWER_THREE);
-    printTowers(theTowers);
-    wait();
-    moveRing(theTowers, TOWER_ONE, TOWER_TWO);
-    printTowers(theTowers);
-    wait();
-    moveRing(theTowers, TOWER_THREE, TOWER_TWO);
-    printTowers(theTowers);
-    wait();
-    moveRing(theTowers, TOWER_ONE, TOWER_THREE);
-    printTowers(theTowers);
-    wait();
-    moveRing(theTowers, TOWER_TWO, TOWER_ONE);
-    printTowers(theTowers);
-    wait();
-    moveRing(theTowers, TOWER_TWO, TOWER_THREE);
-    printTowers(theTowers);
-    wait();
-    moveRing(theTowers, TOWER_ONE, TOWER_THREE);
-    printTowers(theTowers);
 
     //Now for the recursion part...  This is confusing me!
-    solveHanoi();
+    solveHanoi(theTowers, numRings, TOWER_ONE, TOWER_THREE, TOWER_TWO);
+
+    std::cout << std::endl << numMoves << " moves taken.";
     
     return 0;
 }
